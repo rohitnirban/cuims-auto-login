@@ -20,7 +20,7 @@ Cuims Auto Login is a Chrome extension that automatically logs in to [students.c
 
 ## Installation
 
-[![Download ZIP](https://img.shields.io/badge/Download-ZIP-blue.svg)](https://github.com/rohitnirban/cuims-auto-login/archive/refs/tags/untagged-50f19db8760321624a41.zip)
+[![Download ZIP](https://img.shields.io/badge/Download-ZIP-blue.svg)](https://github.com/rohitnirban/cuims-auto-login/archive/refs/tags/v1.zip)
 
 ### Manual Installation
 
