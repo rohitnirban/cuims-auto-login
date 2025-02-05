@@ -84,3 +84,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    chrome.storage.local.get(['userId', 'userPassword'], (data) => {
+        if (data.userId && data.userPassword) {
+            document.getElementById('savedUserId').textContent = data.userId;
+            document.getElementById('savedUserPassword').textContent = '********';
+            document.getElementById('changeCredentialsBtn').classList.remove('hidden');
+        } else {
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('changeCredentialsBtn').addEventListener('click', () => {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('changeCredentialsBtn').classList.add('hidden');
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const userId = document.getElementById('userId').value;
+        const userPassword = document.getElementById('userPassword').value;
+
+        chrome.storage.local.set({ userId, userPassword }, () => {
+            document.getElementById('savedUserId').textContent = userId;
+            document.getElementById('savedUserPassword').textContent = '********';
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('changeCredentialsBtn').classList.remove('hidden');
+        });
+    });
+});

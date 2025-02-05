@@ -3,7 +3,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 170vh;
+    min-height: 150vh;
+    height: auto;
     width: 400px;
     background: #fff;
 }
@@ -20,6 +21,10 @@ body {
 h2 {
     margin-bottom: 20px;
     color: #333;
+}
+
+#loginForm{
+    margin-top: 10px;
 }
 
 .input-group {

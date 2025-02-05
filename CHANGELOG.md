@@ -18,3 +18,6 @@ All notable changes to this project will be documented in this file.
 - Added LICENSE file.
 - Added README file.
 - Added .gitignore file.
+
+### Changes
+- Update UI styles for better layout
