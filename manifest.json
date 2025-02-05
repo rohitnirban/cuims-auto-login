@@ -27,7 +27,7 @@
   },
   "icons": {
     "16": "images/favicon.png",
-    "48": "images/48.jpg",
+    "48": "images/favicon.png",
     "128": "images/128.jpg"
   }
 }

@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Added README file.
 - Added .gitignore file.
 - Add message prompting users to reopen the extension for direct login buttons
+- Optimize wait times in element detection and captcha recognition
 
 ### Changes
 - Update UI styles for better layout

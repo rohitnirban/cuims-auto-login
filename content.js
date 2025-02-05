@@ -6,7 +6,7 @@ function waitForElement(selector, callback, maxWait = 10000) {
             clearInterval(interval);
             callback(element);
         }
-    }, 500);
+    }, 100);
 
     setTimeout(() => clearInterval(interval), maxWait);
 }
@@ -55,7 +55,7 @@ function extractTextFromImage(imgElement) {
 function retryCaptchaRecognition(captchaImgElement, callback) {
     setTimeout(() => {
         solveCaptcha(captchaImgElement, callback);
-    }, 2000);
+    }, 1000);
 }
 
 function showCaptchaError() {

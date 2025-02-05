@@ -5,7 +5,7 @@ function waitForElement(selector, callback) {
             clearInterval(interval);
             callback(element);
         }
-    }, 500);
+    }, 100);
 }
 
 function loginUser(userId, userPassword) {
