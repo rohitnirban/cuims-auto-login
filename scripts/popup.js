@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('changeCredentialsBtn').addEventListener('click', () => {
         document.getElementById('loginForm').classList.remove('hidden');
         document.getElementById('changeCredentialsBtn').classList.add('hidden');
+        document.getElementById('reopenMessage').classList.add('hidden');
     });
 
     document.getElementById('loginForm').addEventListener('submit', (event) => {
@@ -111,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('savedUserPassword').textContent = '********';
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('changeCredentialsBtn').classList.remove('hidden');
+            document.getElementById('reopenMessage').classList.remove('hidden');
         });
     });
 });
