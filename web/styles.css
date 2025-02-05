@@ -72,3 +72,25 @@ footer a {
     color: #fff;
     text-decoration: underline;
 }
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container h1, .container h2, .container h3 {
+    color: #333;
+}
+
+.container p, .container ul {
+    color: #555;
+}
+
+.container ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+}
