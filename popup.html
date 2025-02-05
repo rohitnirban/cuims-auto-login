@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuims Auto Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts/popup.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Cuims Auto Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" required>
+            </div>
+            <div class="input-group">
+                <label for="userPassword">Password:</label>
+                <input type="password" id="userPassword" required>
+            </div>
+            <button type="submit" id="loginBtn">Save Credentials</button>
+        </form>
+        <div class="input-group direct-login">
+            <label for="autoLoginToggle" id="directLoginLabel">Enable Direct Login</label>
+            <input type="checkbox" id="autoLoginToggle">
+            <div class="tooltip">
+                <span style="font-size: 1.5em;">&quest;</span>
+                <span class="tooltiptext"><strong>Direct login buttons:</strong> After saving the credentials and
+                    enabling direct login, you will see direct login buttons for CUIMS and LMS.</span>
+            </div>
+        </div>
+        <button id="directLoginBtnCuims" class="hidden">Direct Login to CUIMS</button>
+        <button id="directLoginBtnLms" class="hidden">Direct Login to LMS</button>
+
+        <div class="saved-credentials">
+            <h3>Saved Credentials</h3>
+            <p><strong>User ID:</strong> <span id="savedUserId"></span></p>
+            <p><strong>Password:</strong> <span id="savedUserPassword"></span></p>
+        </div>
+
+        <div class="how-it-works">
+            <h3>How it works?</h3>
+            <ul>
+                <li><strong>Save your credentials:</strong> If you are not seeing the direct login buttons for both
+                    CUIMS and LMS, you have not saved your credentials. Please first save the credentials.</li>
+                <li><strong>Local storage:</strong> Do not worry, these are saved on your local system and there is no
+                    way anyone can know your credentials, not even us.</li>
+                <li><strong>Enable Direct Login:</strong> Check the "Enable Direct Login" checkbox to allow automatic
+                    login when you type the URL manually or click on the direct login buttons.</li>
+                <li><strong>Direct login buttons:</strong> After saving the credentials and enabling direct login, you
+                    will see direct login buttons for CUIMS and LMS.</li>
+                <li><strong>Automatic login:</strong> Click on where you want to login and it will log you in
+                    automatically.</li>
+                <li><strong>CAPTCHA handling:</strong> If there is any CAPTCHA, it will automatically fill the CAPTCHA.
+                    If it gets it wrong, it will automatically try again and get you logged in.</li>
+            </ul>
+            <p>Happy auto login!</p>
+        </div>
+        <div class="github-container">
+            <a href="https://github.com/rohitnirban" target="_blank" class="github-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577 0-.285-.01-1.04-.015-2.04-3.338.725-4.042-1.61-4.042-1.61-.546-1.385-1.333-1.755-1.333-1.755-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.24 1.84 1.24 1.07 1.835 2.805 1.305 3.49.998.108-.775.418-1.305.76-1.605-2.665-.305-5.466-1.335-5.466-5.93 0-1.31.47-2.38 1.235-3.22-.125-.305-.535-1.54.115-3.205 0 0 1.005-.32 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.55 3.285-1.23 3.285-1.23.655 1.665.245 2.9.12 3.205.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.62-5.475 5.92.43.37.81 1.1.81 2.22 0 1.605-.015 2.895-.015 3.285 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+        </div>
+        <a href="https://forms.gle/1DCDbbr8N3hCEbmU8" target="_blank" class="feedback-button">Provide Feedback</a>
+    </div>
+</body>
+
+</html>

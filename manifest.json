@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Cuims Auto Login",
+  "version": "1.0",
+  "description": "Automatically logs in to students.cuchd.in and lms.cuchd.in",
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "host_permissions": ["https://students.cuchd.in/*", "https://lms.cuchd.in/*"],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://students.cuchd.in/*"],
+      "js": ["tesseract.min.js", "content.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://lms.cuchd.in/login/index.php"],
+      "js": ["tesseract.min.js", "lmsLogin.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_title": "Cuims Auto Login",
+    "default_popup": "popup.html",
+    "default_icon": "images/favicon.png"
+  },
+  "icons": {
+    "16": "images/favicon.png",
+    "48": "images/favicon.png",
+    "128": "images/favicon.png"
+  }
+}
