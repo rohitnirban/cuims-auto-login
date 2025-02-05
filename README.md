@@ -1,6 +1,14 @@
-# Cuims Auto Login
+
+<p align="center">
+    <img src="images/favicon.png" alt="Favicon">
+</p>
+<h1 align="center">Cuims Auto Login</h1>
 
 Cuims Auto Login is a Chrome extension that automatically logs in to [students.cuchd.in](https://students.cuchd.in) and [lms.cuchd.in](https://lms.cuchd.in). It saves your credentials locally and provides direct login buttons for quick access.
+<p align="center">
+    <img src="https://img.shields.io/github/stars/rohitnirban/cuims-auto-login" alt="GitHub Stars">
+    <img src="https://img.shields.io/github/forks/rohitnirban/cuims-auto-login" alt="GitHub Forks">
+</p>
 
 ## Features
 
@@ -15,9 +23,9 @@ Cuims Auto Login is a Chrome extension that automatically logs in to [students.c
 ### Manual Installation
 
 1. Clone the repository or download the ZIP file.
-    ```bash
-    git clone https://github.com/rohitnirban/cuims-auto-login.git
-    ```
+        ```bash
+        git clone https://github.com/rohitnirban/cuims-auto-login.git
+        ```
 2. Open Chrome and navigate to `chrome://extensions/`.
 3. Enable "Developer mode" by toggling the switch in the top right corner.
 4. Click on "Load unpacked" and select the directory where you cloned or extracted the repository.
@@ -54,6 +62,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For any inquiries, please contact [contact@rohitnirban.com](mailto:contact@rohitnirban.com).
 
-![GitHub](https://img.shields.io/github/license/rohitnirban/cuims-auto-login)
-![GitHub stars](https://img.shields.io/github/stars/rohitnirban/cuims-auto-login)
-![GitHub forks](https://img.shields.io/github/forks/rohitnirban/cuims-auto-login)
