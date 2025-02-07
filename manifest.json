@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cuims Auto Login",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Automatically logs in to students.cuchd.in and lms.cuchd.in",
   "permissions": ["activeTab", "storage", "scripting", "tabs"],
   "host_permissions": ["https://students.cuchd.in/*", "https://lms.cuchd.in/*"],
