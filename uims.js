@@ -1,14 +1,21 @@
 // Function to wait for an element in the DOM
-function waitForElement(selector, callback, maxWait = 10000) {
-    const interval = setInterval(() => {
-        const element = document.querySelector(selector);
-        if (element) {
-            clearInterval(interval);
-            callback(element);
-        }
-    }, 100);
+function waitForElement(selector, timeout = 10000) {
+    return new Promise((resolve, reject) => {
+        const interval = 100;
+        let elapsedTime = 0;
 
-    setTimeout(() => clearInterval(interval), maxWait);
+        const checkExist = setInterval(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                clearInterval(checkExist);
+                resolve(element);
+            } else if (elapsedTime >= timeout) {
+                clearInterval(checkExist);
+                reject(new Error(`Element ${selector} not found within ${timeout}ms`));
+            }
+            elapsedTime += interval;
+        }, interval);
+    });
 }
 
 async function solveCaptcha(captchaImgElement, callback) {
@@ -65,30 +72,40 @@ function showCaptchaError() {
 function loginUser(userId, userPassword) {
     const currentURL = window.location.href;
 
-    if (currentURL === "https://students.cuchd.in/") {
-        waitForElement("#txtUserId", (userIdInput) => {
+    if (currentURL === "https://students.cuchd.in/" || currentURL === "https://students.cuchd.in/login.aspx") {
+        waitForElement("#txtUserId", 10000).then((userIdInput) => {
             userIdInput.value = userId;
             const nextButton = document.querySelector('input[name="btnNext"]');
             if (nextButton) {
                 nextButton.click();
             }
+        }).catch((error) => {
+            console.error(error);
         });
-    } else if (currentURL.includes("Login.aspx")) {
-        waitForElement("#txtLoginPassword", (passwordInput) => {
+    } else if (currentURL.includes("identifier")) {
+        waitForElement("#txtLoginPassword", 10000).then((passwordInput) => {
             passwordInput.value = userPassword;
 
-            waitForElement("img[src*='GenerateCaptcha.aspx']", (captchaImg) => {
+            waitForElement("img[src*='GenerateCaptcha.aspx']", 10000).then((captchaImg) => {
                 solveCaptcha(captchaImg, (captchaText) => {
-                    waitForElement("#txtcaptcha", (captchaInput) => {
+                    waitForElement("#txtcaptcha", 10000).then((captchaInput) => {
                         captchaInput.value = captchaText || "";
                         console.log("Entered CAPTCHA:", captchaText);
 
-                        waitForElement('input[name="btnLogin"]', (loginButton) => {
+                        waitForElement('input[name="btnLogin"]', 10000).then((loginButton) => {
                             loginButton.click();
+                        }).catch((error) => {
+                            console.error(error);
                         });
+                    }).catch((error) => {
+                        console.error(error);
                     });
                 });
+            }).catch((error) => {
+                console.error(error);
             });
+        }).catch((error) => {
+            console.error(error);
         });
     }
 }
@@ -98,4 +115,18 @@ chrome.storage.local.get(["autoLoginEnabled", "userId", "userPassword"], (data) 
         loginUser(data.userId, data.userPassword);
     }
 });
+
+async function fillCaptcha() {
+    try {
+        const captchaImage = await waitForElement('#captchaImage');
+        const captchaText = await recognizeCaptcha(captchaImage);
+        const captchaInput = await waitForElement('#captchaInput');
+        captchaInput.value = captchaText;
+        document.querySelector('#loginButton').click();
+    } catch (error) {
+        console.error('Error filling CAPTCHA:', error);
+    }
+}
+
+fillCaptcha();
 

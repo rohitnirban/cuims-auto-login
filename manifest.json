@@ -3,7 +3,7 @@
   "name": "Cuims Auto Login",
   "version": "1.1",
   "description": "Automatically logs in to students.cuchd.in and lms.cuchd.in",
-  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "permissions": ["activeTab", "storage", "scripting"],
   "host_permissions": ["https://students.cuchd.in/*", "https://lms.cuchd.in/*"],
   "background": {
     "service_worker": "background.js"
@@ -11,12 +11,12 @@
   "content_scripts": [
     {
       "matches": ["https://students.cuchd.in/*"],
-      "js": ["tesseract.min.js", "content.js"],
+      "js": ["tesseract.min.js", "uims.js"],
       "run_at": "document_end"
     },
     {
       "matches": ["https://lms.cuchd.in/login/index.php"],
-      "js": ["lmsLogin.js"],
+      "js": ["lms.js"],
       "run_at": "document_end"
     }
   ],
@@ -29,5 +29,11 @@
     "16": "images/favicon.png",
     "48": "images/favicon.png",
     "128": "images/favicon.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["wait.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

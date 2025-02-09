@@ -23,3 +23,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 - Update UI styles for better layout
+
+
+## [1.0.1] - 2025 -02-09
+
+### Changed
+- Auto login scripts updated
+- Update permissions in `manifest.json`.

@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 if (tabId === tab.id && info.status === "complete") {
                     chrome.scripting.executeScript({
                         target: { tabId: tab.id },
-                        files: ["content.js"]
+                        files: ["uims.js"]
                     });
 
                     chrome.tabs.onUpdated.removeListener(listener);
@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 if (tabId === tab.id && info.status === "complete") {
                     chrome.scripting.executeScript({
                         target: { tabId: tab.id },
-                        files: ["lmsLogin.js"]
+                        files: ["lms.js"]
                     });
 
                     chrome.tabs.onUpdated.removeListener(listener);
