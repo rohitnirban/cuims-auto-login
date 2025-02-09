@@ -30,3 +30,4 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Auto login scripts updated
 - Update permissions in `manifest.json`.
+- Enhance user guidance for first-time use
