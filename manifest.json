@@ -29,11 +29,5 @@
     "16": "images/favicon.png",
     "48": "images/favicon.png",
     "128": "images/favicon.png"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["wait.html"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 }

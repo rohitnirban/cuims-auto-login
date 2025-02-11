@@ -31,3 +31,4 @@ All notable changes to this project will be documented in this file.
 - Auto login scripts updated
 - Update permissions in `manifest.json`.
 - Enhance user guidance for first-time use
+- Remove web_accessible_resources entry for wait.html from manifest.json
