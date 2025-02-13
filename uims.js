@@ -23,7 +23,7 @@ async function solveCaptcha(captchaImgElement, callback) {
         const captchaText = await extractTextFromImage(captchaImgElement);
         console.log("Extracted CAPTCHA:", captchaText);
 
-        if (captchaText && captchaText.length > 2) {
+        if (captchaText && captchaText.length === 4 && captchaText.match(/^[a-zA-Z0-9]+$/)) {
             callback(captchaText);
         } else {
             console.warn("OCR Failed, retrying...");
@@ -48,7 +48,9 @@ function extractTextFromImage(imgElement) {
 
             const imageData = canvas.toDataURL("image/png");
 
-            Tesseract.recognize(imageData, "eng")
+            Tesseract.recognize(imageData, "eng", {
+                logger: (m) => console.log(m),
+            })
                 .then(({ data: { text } }) => {
                     resolve(text.trim());
                 })
