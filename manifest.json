@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://students.cuchd.in/*"],
-      "js": ["tesseract.min.js", "uims.js"],
+      "js": ["uims.js"],
       "run_at": "document_end"
     },
     {

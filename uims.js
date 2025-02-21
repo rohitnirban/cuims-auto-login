@@ -1,134 +1,172 @@
-// Function to wait for an element in the DOM
-function waitForElement(selector, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-        const interval = 100;
-        let elapsedTime = 0;
+(() => {
+    if (window.cuimsAutoLoginLoaded) return;
+    window.cuimsAutoLoginLoaded = true;
 
-        const checkExist = setInterval(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                clearInterval(checkExist);
-                resolve(element);
-            } else if (elapsedTime >= timeout) {
-                clearInterval(checkExist);
-                reject(new Error(`Element ${selector} not found within ${timeout}ms`));
+    const CONFIG = {
+        MAX_RETRIES: 7,
+        OCR_API_KEYS: [
+            "K86940850288957",
+            "K83300106788957",
+            "K89935611888957",
+            "K85050292688957",
+            "K83675191488957",
+            "K84547944988957",
+            "K88166917288957"
+        ],
+        CAPTCHA_SELECTOR: "img[src*='GenerateCaptcha.aspx']",
+        REFRESH_TIMEOUT: 3000,
+        OCR_TIMEOUT: 10000,
+        OCR_API_URL: "https://api.ocr.space/parse/image"
+    };
+
+    // Helper to get a random API key
+    const getRandomAPIKey = () =>
+        CONFIG.OCR_API_KEYS[Math.floor(Math.random() * CONFIG.OCR_API_KEYS.length)];
+
+    // Optimized element waiter using MutationObserver
+    const waitForElement = (selector, timeout = 10000) => new Promise((resolve, reject) => {
+        const start = Date.now();
+        const observer = new MutationObserver(() => {
+            const el = document.querySelector(selector);
+            if (el) {
+                observer.disconnect();
+                resolve(el);
+            } else if (Date.now() - start > timeout) {
+                observer.disconnect();
+                reject(`Timeout: ${selector}`);
             }
-            elapsedTime += interval;
-        }, interval);
-    });
-}
+        });
 
-async function solveCaptcha(captchaImgElement, callback) {
-    try {
-        const captchaText = await extractTextFromImage(captchaImgElement);
-        console.log("Extracted CAPTCHA:", captchaText);
-
-        if (captchaText && captchaText.length === 4 && captchaText.match(/^[a-zA-Z0-9]+$/)) {
-            callback(captchaText);
-        } else {
-            console.warn("OCR Failed, retrying...");
-            retryCaptchaRecognition(captchaImgElement, callback);
+        observer.observe(document.body, { childList: true, subtree: true });
+        // Initial check in case the element already exists
+        const el = document.querySelector(selector);
+        if (el) {
+            observer.disconnect();
+            resolve(el);
         }
-    } catch (error) {
-        console.error("Error solving CAPTCHA:", error);
-        showCaptchaError();
-    }
-}
+    });
 
-function extractTextFromImage(imgElement) {
-    return new Promise((resolve, reject) => {
+    // Unified error handler
+    const handleError = (error, context) =>
+        console.error(`[${context}]`, error);
+
+    // Optimized CAPTCHA solver
+    const solveCaptcha = async (imgElement, callback) => {
+        let retryCount = 0;
+
+        while (retryCount < CONFIG.MAX_RETRIES) {
+            try {
+                const captchaText = await Promise.race([
+                    extractTextFromImage(imgElement),
+                    new Promise((_, r) => setTimeout(r, CONFIG.OCR_TIMEOUT, "OCR timeout"))
+                ]);
+
+                if (/^[a-z0-9]{4}$/i.test(captchaText)) {
+                    callback(captchaText);
+                    return;
+                }
+
+                retryCount++;
+                await refreshCaptcha(imgElement);
+                imgElement = await waitForElement(CONFIG.CAPTCHA_SELECTOR);
+            } catch (error) {
+                handleError(error, "CAPTCHA Solver");
+                retryCount++;
+            }
+        }
+        handleError("Max retries reached", "CAPTCHA Solver");
+    };
+
+    // Efficient CAPTCHA refresh
+    const refreshCaptcha = async (imgElement) => {
+        try {
+            const newSrc = `${imgElement.src.split('?')[0]}?t=${Date.now()}`;
+            await new Promise((resolve, reject) => {
+                imgElement.onload = resolve;
+                imgElement.onerror = reject;
+                imgElement.src = newSrc;
+                setTimeout(reject, CONFIG.REFRESH_TIMEOUT);
+            });
+        } catch {
+            document.querySelector("#lnkupCaptcha")?.click();
+            await waitForElement(CONFIG.CAPTCHA_SELECTOR);
+        }
+    };
+
+    // Optimized OCR with proper image processing
+    const extractTextFromImage = async (imgElement) => {
         try {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
 
+            // Draw the image onto the canvas
             canvas.width = imgElement.width;
             canvas.height = imgElement.height;
-
             ctx.drawImage(imgElement, 0, 0, imgElement.width, imgElement.height);
 
+            // Preprocess the image for better OCR accuracy
+            ctx.filter = "contrast(150%) brightness(110%) grayscale(100%)";
+            ctx.drawImage(imgElement, 0, 0, imgElement.width, imgElement.height);
+
+            // Convert canvas to base64 image
             const imageData = canvas.toDataURL("image/png");
 
-            Tesseract.recognize(imageData, "eng", {
-                logger: (m) => console.log(m),
-            })
-                .then(({ data: { text } }) => {
-                    resolve(text.trim());
+            // Send the image to OCR API
+            const response = await fetch(CONFIG.OCR_API_URL, {
+                method: "POST",
+                headers: {
+                    "apikey": getRandomAPIKey(),
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    "base64Image": imageData,
+                    "language": "eng",
+                    "OCREngine": "2",
+                    "scale": "true",
+                    "isTable": "false"
                 })
-                .catch(reject);
-        } catch (err) {
-            reject(err);
+            });
+
+            const data = await response.json();
+            return data.ParsedResults?.[0]?.ParsedText?.trim().slice(0, 4) || "";
+        } catch (error) {
+            handleError(error, "OCR");
+            return "";
+        }
+    };
+
+    // Optimized login flow
+    const loginUser = async (userId, password) => {
+        try {
+            const isPasswordPage = location.href.includes("identifier");
+            const fields = await Promise.all([
+                waitForElement(isPasswordPage ? "#txtLoginPassword" : "#txtUserId"),
+                waitForElement(isPasswordPage ? CONFIG.CAPTCHA_SELECTOR : 'input[name="btnNext"]')
+            ]);
+
+            fields[0].value = isPasswordPage ? password : userId;
+
+            if (isPasswordPage) {
+                await solveCaptcha(fields[1], async (text) => {
+                    const [input, button] = await Promise.all([
+                        waitForElement("#txtcaptcha"),
+                        waitForElement('input[name="btnLogin"]')
+                    ]);
+                    input.value = text;
+                    button.click();
+                });
+            } else {
+                fields[1].click();
+            }
+        } catch (error) {
+            handleError(error, "Login Flow");
+        }
+    };
+
+    // Initialization
+    chrome.storage.local.get(["autoLoginEnabled", "userId", "userPassword"], (data) => {
+        if (data.autoLoginEnabled && data.userId && data.userPassword) {
+            requestIdleCallback(() => loginUser(data.userId, data.userPassword));
         }
     });
-}
-
-function retryCaptchaRecognition(captchaImgElement, callback) {
-    setTimeout(() => {
-        solveCaptcha(captchaImgElement, callback);
-    }, 1000);
-}
-
-function showCaptchaError() {
-    alert("Failed to recognize CAPTCHA. Please solve it manually.");
-}
-
-function loginUser(userId, userPassword) {
-    const currentURL = window.location.href;
-
-    if (currentURL === "https://students.cuchd.in/" || currentURL === "https://students.cuchd.in/login.aspx") {
-        waitForElement("#txtUserId", 10000).then((userIdInput) => {
-            userIdInput.value = userId;
-            const nextButton = document.querySelector('input[name="btnNext"]');
-            if (nextButton) {
-                nextButton.click();
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-    } else if (currentURL.includes("identifier")) {
-        waitForElement("#txtLoginPassword", 10000).then((passwordInput) => {
-            passwordInput.value = userPassword;
-
-            waitForElement("img[src*='GenerateCaptcha.aspx']", 10000).then((captchaImg) => {
-                solveCaptcha(captchaImg, (captchaText) => {
-                    waitForElement("#txtcaptcha", 10000).then((captchaInput) => {
-                        captchaInput.value = captchaText || "";
-                        console.log("Entered CAPTCHA:", captchaText);
-
-                        waitForElement('input[name="btnLogin"]', 10000).then((loginButton) => {
-                            loginButton.click();
-                        }).catch((error) => {
-                            console.error(error);
-                        });
-                    }).catch((error) => {
-                        console.error(error);
-                    });
-                });
-            }).catch((error) => {
-                console.error(error);
-            });
-        }).catch((error) => {
-            console.error(error);
-        });
-    }
-}
-
-chrome.storage.local.get(["autoLoginEnabled", "userId", "userPassword"], (data) => {
-    if (data.autoLoginEnabled && data.userId && data.userPassword) {
-        loginUser(data.userId, data.userPassword);
-    }
-});
-
-async function fillCaptcha() {
-    try {
-        const captchaImage = await waitForElement('#captchaImage');
-        const captchaText = await recognizeCaptcha(captchaImage);
-        const captchaInput = await waitForElement('#captchaInput');
-        captchaInput.value = captchaText;
-        document.querySelector('#loginButton').click();
-    } catch (error) {
-        console.error('Error filling CAPTCHA:', error);
-    }
-}
-
-fillCaptcha();
-
+})();

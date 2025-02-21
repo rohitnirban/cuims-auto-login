@@ -1,7 +1,3 @@
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.tabs.create({ url: "wait.html" });
-});
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "openAndLogin") {
         const url = "https://students.cuchd.in";
